@@ -1,8 +1,0 @@
--Dplatform5.static.resourcesRoot=./../webapp
--Xms512M -Xmx4G
--Dconfig.file=./../conf/application.conf
--Dlog4j.configurationFile=./../conf/log4j2.xml
--Dfile.encoding=UTF-8
--Djava.awt.headless=true
--DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
--Dnashorn.args=--language=es6
