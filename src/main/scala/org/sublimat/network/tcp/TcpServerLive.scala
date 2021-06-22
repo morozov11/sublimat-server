@@ -1,11 +1,11 @@
 package org.sublimat.network.tcp
 
-import zio.Task
+import zio.{Queue, Task}
 
 
 object TcpServerLive {
 
-  override def bind(host: String, port: Int): Task[TcpServerLive] = {
+  def bind(host: String, port: Int): Task[TcpServerLive] = {
     ???
   }
 
@@ -15,10 +15,12 @@ object TcpServerLive {
 
 class TcpServerLive(host: String, port: Int) extends TcpServer {
 
-
-
-  override def close(): Task[Unit] = {
+  def close(): Task[Unit] = {
     ???
   }
+
+  override def offer(data: String): Task[Unit] = ???
+
+  override def outQueue: Queue[String] = ???
 
 }

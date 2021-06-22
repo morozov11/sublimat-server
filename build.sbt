@@ -33,8 +33,9 @@ lazy val root = (project in file("."))
       "UTF-8",
       "-unchecked",
       "-language:higherKinds",
+      "-language:existentials",
       "-Ymacro-annotations",
-      "-P:kind-projector:underscore-placeholders",
+    //  "-P:kind-projector:underscore-placeholders",
      // "-source:3.0-migration"
     //  "-Ykind-projector"
     ) ++ (if (isSnapshot.value) Seq.empty
@@ -54,9 +55,9 @@ lazy val root = (project in file("."))
     bashScriptConfigLocation := Some("${app_home}/../SERVER_config.txt"),
 
     libraryDependencies ++= Seq(
-      ("org.http4s"                   %% "http4s-blaze-server" % Version.http4s).cross(CrossVersion.for3Use2_13),
-      ("org.http4s"                   %% "http4s-dsl"          % Version.http4s).cross(CrossVersion.for3Use2_13),
-      ("org.http4s"                   %% "http4s-blaze-client" % Version.http4s).cross(CrossVersion.for3Use2_13),
+//      ("org.http4s"                   %% "http4s-blaze-server" % Version.http4s).cross(CrossVersion.for3Use2_13),
+//      ("org.http4s"                   %% "http4s-dsl"          % Version.http4s).cross(CrossVersion.for3Use2_13),
+//      ("org.http4s"                   %% "http4s-blaze-client" % Version.http4s).cross(CrossVersion.for3Use2_13),
 
       "dev.zio"                      %% "zio"                 % Version.zio,
       "dev.zio"                      %% "zio-test"            % Version.zio  % "test",
@@ -65,7 +66,10 @@ lazy val root = (project in file("."))
       "dev.zio"                      %% "zio-logging"         % Version.zioLogging,
       "dev.zio"                      %% "zio-logging-slf4j"   % Version.zioLogging,
       "dev.zio"                      %% "zio-config" %   Version.zioConfig,
-    //  "io.github.kitlangton" %% "zio-magic" % "0.3.3",
+
+      "io.d11" %% "zhttp" % "1.0.0.0-RC17",
+
+        //  "io.github.kitlangton" %% "zio-magic" % "0.3.3",
       "dev.zio" %% "zio-config-typesafe" %   Version.zioConfig,
 
       "org.apache.logging.log4j"      % "log4j-api"           % Version.log4j,
@@ -77,8 +81,8 @@ lazy val root = (project in file("."))
       "commons-codec"                 % "commons-codec"       % Version.apacheCodec,
 
       "org.fomkin" %% "korolev" % Version.korolev,
+      "org.fomkin" %% "korolev-scodec" % Version.korolev,
       "org.fomkin" %% "korolev-zio" % Version.korolev,
-      "org.fomkin" %% "korolev-http4s" % Version.korolev,
 
       "org.typelevel" %% "cats-effect" % "2.5.1",
 

@@ -1,21 +1,14 @@
 package org.sublimat
 
-import org.http4s.HttpApp
-import org.http4s.server.Router
-import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.server.middleware.CORS
+
 import zio.clock.Clock
 import zio.{App, RIO, ZEnv, ZIO, logging, ExitCode => ZExitCode}
-import zio.interop.catz._
-import cats.effect.{ExitCode => CatsExitCode, _}
-import org.http4s.implicits._
 import org.sublimat.Layers.AppEnv
 import org.sublimat.adminpanel.AdminEndpoint
 import org.sublimat.appconfig.{AppConfig, HasAppConfig}
+import zhttp.http.HttpApp
+import zhttp.service.Server
 import zio.blocking.Blocking
-//import zio.magic.ZioProvideMagicOps
-
-import scala.concurrent.ExecutionContext
 
 
 object Main extends App {
@@ -28,39 +21,22 @@ object Main extends App {
       _   <- logging.log.info(s"Load configuration ...")
       cfg <- AppConfig.getAppConfig
       _   <- logging.log.info(s"Starting service ...")
-      wsRoute <- AdminEndpoint.route()
-      httpApp = Router[AppTask]("/" -> wsRoute).orNotFound
+      httpApp <- AdminEndpoint.route()
+      _   <- logging.log.info(s"Run http at port ${cfg.http.port}")
       _   <- runHttp(httpApp, cfg.http.port)
     } yield ZExitCode.success
 
     prog.provideCustomLayer(Layers.appEnv).orDie
 
-//    prog.inject(
-//      Layers.appConfig,
-//      Layers.logging,
-//      Blocking.live,
-//      Clock.live
-//    ).orDie
   }
 
 
 
   def runHttp[R <: Clock with Blocking](
-                           httpApp: HttpApp[RIO[R, *]],
+                           httpApp: HttpApp[R, Throwable],
                            port: Int
                          ): ZIO[R, Throwable, Unit] = {
-    type Task[A] = RIO[R, A]
-    ZIO.runtime[R].flatMap { implicit rts =>
-      for {
-        r <- BlazeServerBuilder
-          .apply[Task](ExecutionContext.global)
-          .bindHttp(port, "0.0.0.0")
-          .withHttpApp(CORS(httpApp))
-          .serve
-          .compile[Task, Task, CatsExitCode]
-          .drain
-      } yield r
-    }
+    Server.start(port, httpApp)
   }
 
 }
